@@ -8,3 +8,20 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
   // Hello World!
 ```
 
+<h3>camelToSnake</h3>
+```php
+  Stringify::create('Hello World')->camelToSnake();
+  // hello_world
+```
+
+<h3>capitalize</h3>
+```php
+  Stringify::create('hello hoRld')->capitalize();
+  // Hello WoRld
+```
+
+<h3>create($string)</h3>
+```php
+  // Named constructor
+  Stringify::create('Hello World')
+```
