@@ -3,7 +3,10 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
 
 # Methods
 append($string)
+```php
 <pre>
   Stringify::create('Hello')->append(' World!');
   // Hello World!
 </pre>
+```
+
