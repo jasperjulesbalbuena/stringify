@@ -16,7 +16,7 @@
 
 		public function capitalize()
 		{
-			$string = Stringify::create('Hello WoRld')->capitalize();
+			$string = Stringify::create('hello woRld')->capitalize();
 			$this->assertEquals('Hello WoRld', $string);
 		}
 
