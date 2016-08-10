@@ -26,13 +26,24 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
   // hello-world
 ```
 
-<h3>
+<h3> string transform ( int $type [, string $position] ) </h3>
 ```php
-  string substr ( string $string , int $start [, int $length ] )
+  Stringify::create('HELLO')->transform();
+  // hello
+  Stringify::create('HELLO')->transform(0, 1);
+  // hELLO
+  Stringify::create('hello')->transform(1, 1);
+  // Hello
 ```
-</h3>
+
+<h3> string transformWords ( int $type [, string $position] ) </h3>
 ```php
-  Stringify::create('H
+  Stringify::create('HELLO WORLD')->transformWords();
+  // hello world
+  Stringify::create('HELLO')->transformWords(0, 1);
+  // hELLO wORLD
+  Stringify::create('hello')->transformWords(1, 1);
+  // Hello World
 ```
 
 <h1>To be continued...</h1>
