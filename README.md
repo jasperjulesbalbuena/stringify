@@ -16,7 +16,7 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
 
 <h3>capitalize</h3>
 ```php
-  Stringify::create('hello hoRld')->capitalize();
+  Stringify::create('hello woRld')->capitalize();
   // Hello WoRld
 ```
 
