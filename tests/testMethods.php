@@ -14,16 +14,24 @@
 			$this->assertEquals('hello_world', $string);
 		}
 
-		public function capitalize()
-		{
-			$string = Stringify::create('hello woRld')->capitalize();
-			$this->assertEquals('Hello WoRld', $string);
-		}
-
 		public function create($string)
 		{
 			$string = Stringify::create('Hello World');
 			$this->assertEquals('Hello World', $string);
+		}
+		
+		public function transform()
+		{
+			$string = Stringify::create('HELLO')->transform();
+			$this->assertEquals('hello', $string);
+			$string = Stringify::create('HELLO')->transform();
+			$this->assertEquals('hello', $string);
+		}
+		
+		public function transformWords()
+		{
+			$string = Stringify::create('HELLO WORLD')->transformWords();
+			$this->assertEquals('hello world', $string);
 		}
 	}
 ?>
