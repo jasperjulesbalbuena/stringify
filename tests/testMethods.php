@@ -3,11 +3,11 @@
 
 	class Test extends PHPUnit_Framework_TestCase
 	{
-		// public function test_appended()
-		// {
-		// 	$string = Stringify::create('Hello')->append(' World');
-		// 	$this->assertEquals('Hello World', $string);
-		// }
+		public function test_appended()
+		{
+			$string = Stringify::create('Hello')->append(' World');
+			$this->assertEquals('Hello World', $string);
+		}
 
 		// public function test_camelToSnake()
 		// {
@@ -26,8 +26,5 @@
 		// 	$string = Stringify::create('Hello World');
 		// 	$this->assertEquals('Hello World', $string);
 		// }
-		public function testOnePlusOne() {
-			$this->assertEquals(2, 1+1);
-	   	}
 	}
 ?>
