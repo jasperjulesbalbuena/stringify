@@ -25,3 +25,5 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
   // Named constructor
   Stringify::create('Hello World')
 ```
+
+<h1>To be continued...</h1>
