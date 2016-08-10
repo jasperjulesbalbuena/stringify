@@ -1,18 +1,30 @@
 <?php
-class Stringify {
-	public function __construct($string) {
+
+// PSR-1
+
+class Stringify
+{
+	public function __construct($string)
+	{
 		/**
 		* @param string
 		*
 		* return error message
 		*
 		*/
-		if(!is_string($string))
-		{
+		if (!is_string($string)) {
 			return 'Cannot create string type of ' . gettype($string);
 		}
 		$this->string = $string;
 	}
+	
+	/**
+	* @return string
+	*/
+    public function __toString()
+    {
+		return $this->string;
+    }
 	
 	
 	/**
@@ -21,25 +33,56 @@ class Stringify {
 	* @param string
 	* @return object
 	*/	
-	public function append($string) {
-		return $this->string . $string;
+	public function append($string)
+	{
+		return new static($this->string . $string);
 	}
 	
 	
 	/**
-	* Convert a CamelCase string to snake_case
+	* Convert string to 1) camelCase, 2) ClassCase, 3) slug-case, 4) snake_case
 	*
+	* @param int
 	* @return object
 	*/
-	public function camelToSnake() {
+	public function changeCase($type = 1)
+	{
+		// 1 = camelCase, 2 = ClassCase, 3 = slug-case, 4 = snake_case
 		preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $this->string, $matches);
 		
 		//Force the variable to be passed by reference
 		foreach ($matches[0] as &$match) {
-			$match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+			$match = $match == strtoupper($match) ? strtolower($match) : ucfirst($match);
 		}
 		
-		return implode('_', $matches[0]);
+		switch($type) {
+			case 1:
+				// first letter should be lowercase
+				$matches[0][0] = strtolower($matches[0][0]);
+				
+				$delimiter = '';
+				break; // precaution
+			case 2:
+				$delimiter = '';
+				break; // precaution
+			case 3:
+				// all characters should be lowercase
+				foreach ($matches[0] as $key => $value) {
+					$matches[0][$key] = strtolower($value);
+				}
+				$delimiter = '-';
+				break;
+			case 4:
+				// first letters should be lowercase
+				foreach ($matches[0] as $key => $value) {
+					$matches[0][$key] = strtolower($value);
+				}
+				
+				$delimiter = '_';
+				break; // precaution
+		}
+		
+		return new static(implode($delimiter, $matches[0]));
 	}
 	
 	
@@ -49,19 +92,21 @@ class Stringify {
 	* @param string
 	* @return object
 	*/
-	public function create($string) {
+	public function create($string)
+	{
 		return new static($string);
 	}
 	
 	/**
-	* Get the plural form of the noun
+	* Get the plural form of the noun based on the number of items
 	*
 	* @param array
 	* @return object
 	*/
-	public function getPlural($array = []) {
-		if(count($array) <= 1) { // Return singular if array is less than or equal to one
-			return $this->string;
+	public function getPlural($array = [])
+	{
+		if (count($array) == 1) { // Return singular if array is equal to one
+			return new static($this->string);
 		}
 		// Source: https://www.grammarly.com/handbook/grammar/nouns/3/plural-nouns/
 		$plural = [
@@ -82,20 +127,22 @@ class Stringify {
 		];
 		
 		if( in_array(strtolower($this->string), $plural) ) { // sheep, moose
-			return $this->string;
+			$return = $this->string;
 		}
 		else if( array_key_exists(strtolower(substr($this->string, -2)), $plurable) ) { // fe, us, is, on
-			return substr($this->string, 0, -2) . $plurable[substr($this->string, -2)];
+			$return = substr($this->string, 0, -2) . $plurable[substr($this->string, -2)];
 		}
 		else if( array_key_exists(strtolower(substr($this->string, -1)), $plurable) ) {
-			return substr($this->string, 0, -1) . $plurable[substr($this->string, -1)];
+			$return = substr($this->string, 0, -1) . $plurable[substr($this->string, -1)];
 		}
 		else if( array_key_exists(strtolower($this->string), $exceptions) ) {
-			return $exceptions[strtolower($this->string)];
+			$return = $exceptions[strtolower($this->string)];
 		}
 		else {
-			return $this->string;
+			$return = $this->string . 's';
 		}
+		
+		return new static($return);
 	}
 	
 	
@@ -105,8 +152,9 @@ class Stringify {
 	* @param string
 	* @return object
 	*/
-	public function getPossessive($string) {
-		return $string .= substr($string, -1) == 's' ? "'" : "'s";
+	public function getPossessive()
+	{
+		return new static($this->string .= substr($this->string, -1) == 's' ? "'" : "'s");
 	}
 	
 	
@@ -116,19 +164,59 @@ class Stringify {
 	* @param string
 	* @return object
 	*/	
-	public function prepend($string) {
-		return $string . $this->string;
+	public function prepend($string = '')
+	{
+		return new static($string . $this->string);
 	}
 	
 	/**
-	* Convert sentence to slug
+	* Replace/Remove string with set of characters
 	*
+	* @param string
+	* @param string
 	* @return object
 	*/
-	public function toSlug($string) {
-		return strtolower(str_replace(' ', '-', trim($string)));
+	public function replace($string = '', $replacement = '')
+	{
+		return new static(str_replace($string, $replacement, $this->string));
 	}
 	
+	/**
+	* Append string by itself
+	*
+	* @param int
+	* @return object
+	*/
+	public function replicate($iterations = 1)
+	{
+		if (!is_int($iterations)) {
+			return 'Value must be an integer';
+		}
+		else if ($iterations <= 0 ) {
+			return 'Value must be greater than 0';
+		}
+		
+		$string = "";
+		$ctr = 0;
+		while ($ctr < $iterations) {
+			$string .= trim($this->string);
+			$ctr++;
+		}
+		
+		return new static($string);
+	}
+	
+	
+	/**
+	* Return the string.
+	*
+	* @return string
+	*/
+    public function toString()
+    {
+		return $this->string;
+    }
+
 	
 	/**
 	* Transform string to lower/upper case
@@ -137,35 +225,35 @@ class Stringify {
 	* @param string $position
 	* @return object
 	*/
-	public function transform($type = 1, $position = 'all') {
-		if( $type == 0 ) { // Lowercase
+	public function transform($type = 1, $position = 'all')
+	{
+		if ($type == 1) { // Lowercase
 			try {
 				if($position == 'all') {
 					return strtolower($this->string);
 				}
 				else if($position >= 1) {
 					$position--; // So that counter starts at 1
-					foreach(str_split($this->string) as $key => $value) {
-						if($position == $key) $this->string[$position] = strtolower($value);
+					foreach (str_split($this->string) as $key => $value) {
+						if ($position == $key) $this->string[$position] = strtolower($value);
 					}
-					return $this->string;
+					return new static($this->string);
 				}
 			} catch (Exception $e) {
 			}
 		}
 		else { // Uppercase
 			try {
-				if($position == 'all') {
+				if ($position == 'all') {
 					return strtoupper($this->string);
 				}
-				else if($position >= 1) {
-					foreach(str_split($this->string) as $key => $value) {
+				else if ($position >= 1) {
+					foreach (str_split($this->string) as $key => $value) {
 						if($position == $key) $this->string[$position] = strtoupper($value);
 					}
-					return $this->string;
+					return new static($this->string);
 				}
 			} catch (Exception $e) {
-				
 			}
 		}
 	}
@@ -176,13 +264,16 @@ class Stringify {
 	*
 	* @param int $type
 	* @param string $position
-	* @return object
+	* @return string
 	**/
-	public function transformWords($type = 1, $position = 'all') {
+	public function transformWords($type = 1, $position = 'all')
+	{
 		$string = "";
-		foreach(explode(" ", $this->string) as $value) {
+		foreach (explode(" ", $this->string) as $value) {
 			$string .= ' ' . Stringify::create($value)->transform($type, $position);
 		}
-		return $string;
+		return new static($string);
 	}
 }
+
+echo Stringify::create('bird')->getPlural(['parrot', 'lovebirds'])->getPossessive()->append(' Birthday');
