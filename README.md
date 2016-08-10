@@ -14,16 +14,25 @@ A simple class to manipulate strings, Object-Oriented style. Inspired by Matt Sp
   // hello_world
 ```
 
-<h3>capitalize</h3>
-```php
-  Stringify::create('hello woRld')->capitalize();
-  // Hello WoRld
-```
-
 <h3>create($string)</h3>
 ```php
   // Named constructor
   Stringify::create('Hello World')
+```
+
+<h3>toSlug</h3>
+```php
+  Stringify::create('Hello World')->toSlug();
+  // hello-world
+```
+
+<h3>
+```php
+  string substr ( string $string , int $start [, int $length ] )
+```
+</h3>
+```php
+  Stringify::create('H
 ```
 
 <h1>To be continued...</h1>
