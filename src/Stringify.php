@@ -225,11 +225,11 @@ class Stringify
 	* @param string $position
 	* @return object
 	*/
-	public function transform($type = 1, $position = 'all')
+	public function transform($type = 1, $position = 0)
 	{
 		if ($type == 1) { // Lowercase
 			try {
-				if($position == 'all') {
+				if($position == 0) {
 					return strtolower($this->string);
 				}
 				else if($position >= 1) {
@@ -244,10 +244,11 @@ class Stringify
 		}
 		else { // Uppercase
 			try {
-				if ($position == 'all') {
+				if ($position == 0) {
 					return strtoupper($this->string);
 				}
 				else if ($position >= 1) {
+					$position--; // So that counter starts at 1
 					foreach (str_split($this->string) as $key => $value) {
 						if($position == $key) $this->string[$position] = strtoupper($value);
 					}
@@ -266,7 +267,7 @@ class Stringify
 	* @param string $position
 	* @return string
 	**/
-	public function transformWords($type = 1, $position = 'all')
+	public function transformWords($type = 1, $position = 0)
 	{
 		$string = "";
 		foreach (explode(" ", $this->string) as $value) {
@@ -275,5 +276,3 @@ class Stringify
 		return new static($string);
 	}
 }
-
-echo Stringify::create('bird')->getPlural(['parrot', 'lovebirds'])->getPossessive()->append(' Birthday');
